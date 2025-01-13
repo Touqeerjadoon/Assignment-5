@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  inventory:
+    build:
+      context: ../shipr-inventory
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - ALLOW_ORIGINS=http://localhost:3000
+      - ALLOW_METHODS=*
+      - ALLOW_HEADERS=*
+    depends_on:
+      - redis
+
+  inventory-consumer:
+    build:
+      context: ../shipr-inventory
+      dockerfile: Dockerfile.consumer
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+    depends_on:
+      - redis
+      - inventory
+
+  payment:
+    build:
+      context: ../shipr-payment
+    ports:
+      - "8001:8001"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - ALLOW_ORIGINS=*
+      - ALLOW_METHODS=*
+      - ALLOW_HEADERS=*
+      - PRODUCT_SERVICE_URL=http://inventory:8000
+      - FEE_PERCENTAGE=5
+    depends_on:
+      - redis
+      - inventory
+
+  payment-consumer:
+    build:
+      context: ../shipr-payment
+      dockerfile: Dockerfile.consumer
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+    depends_on:
+      - redis
+      - payment
+
+  frontend:
+    build:
+      context: ../shipr-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_INVENTORY_SERVICE_URL=http://localhost:8000
+      - REACT_APP_PAYMENTS_SERVICE_URL=http://localhost:8001
+    depends_on:
+      - inventory
+      - payment
