@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-inventory
+spec:
+  replicas: {{ .Values.inventory.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-inventory
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-inventory
+    spec:
+      containers:
+      - name: inventory
+        image: "{{ .Values.inventory.image.repository }}:{{ .Values.inventory.image.tag }}"
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: redis-config

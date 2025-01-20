@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shipr-payment-config
+data:
+  REDIS_HOST: {{ .Values.payment.redis.host }}
+  REDIS_PORT: "{{ .Values.payment.redis.port }}"
+  REDIS_DB: "{{ .Values.payment.redis.db }}"
+  ALLOW_ORIGINS: "{{ .Values.payment.allowOrigins }}"
+  ALLOW_METHODS: "{{ .Values.payment.allowMethods }}"
+  ALLOW_HEADERS: "{{ .Values.payment.allowHeaders }}"
+  PRODUCT_SERVICE_URL: "{{ .Values.payment.productServiceUrl }}"
+  FEE_PERCENTAGE: "{{ .Values.payment.feePercentage }}"

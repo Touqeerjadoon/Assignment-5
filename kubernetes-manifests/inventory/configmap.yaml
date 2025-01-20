@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inventory-config
+data:
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+  ALLOW_ORIGINS: "*"
+  ALLOW_METHODS: "*"
+  ALLOW_HEADERS: "*"

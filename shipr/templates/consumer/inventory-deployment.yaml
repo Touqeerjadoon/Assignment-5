@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-inventory-consumer
+spec:
+  replicas: {{ .Values.consumer.inventory.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-inventory-consumer
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-inventory-consumer
+    spec:
+      containers:
+      - name: inventory-consumer
+        image: "{{ .Values.consumer.inventory.image.repository }}:{{ .Values.consumer.inventory.image.tag }}"
+        command: [ "python", "consumer.py" ]
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.consumer.inventory.redis.configMap }}

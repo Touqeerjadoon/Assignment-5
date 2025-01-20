@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-payment-consumer
+spec:
+  replicas: {{ .Values.consumer.payment.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-payment-consumer
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-payment-consumer
+    spec:
+      containers:
+      - name: payment-consumer
+        image: "{{ .Values.consumer.payment.image.repository }}:{{ .Values.consumer.payment.image.tag }}"
+        command: [ "python", "consumer.py" ]
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.consumer.payment.redis.configMap }}
