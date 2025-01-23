@@ -18,11 +18,11 @@ spec:
       - name: frontend
         image: touqeerjadoon55/reactfrontend:v5
         ports:
-        - containerPort: 80
-        env:
-        - name: REACT_APP_INVENTORY_SERVICE_URL
-          value: "http://192.168.49.2:30002"
-        - name: REACT_APP_PAYMENTS_SERVICE_URL
-          value: "http://192.168.49.2:30003"
-        - name: PUBLIC_URL
-          value: "/"
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"

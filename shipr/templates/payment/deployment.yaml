@@ -22,8 +22,10 @@ spec:
         envFrom:
         - configMapRef:
             name: {{ .Release.Name }}-payment-config
-        env:
-        - name: PRODUCT_SERVICE_URL
-          value: "{{ .Values.payment.productServiceUrl }}"
-        - name: FEE_PERCENTAGE
-          value: "{{ .Values.payment.feePercentage }}"
+        resources:
+          requests:
+            memory: "{{ .Values.payment.resources.requests.memory }}"
+            cpu: "{{ .Values.payment.resources.requests.cpu }}"
+          limits:
+            memory: "{{ .Values.payment.resources.limits.memory }}"
+            cpu: "{{ .Values.payment.resources.limits.cpu }}"

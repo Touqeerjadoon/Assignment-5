@@ -19,3 +19,10 @@ spec:
         envFrom:
         - configMapRef:
             name: {{ .Values.consumer.inventory.redis.configMap }}
+        resources:
+          requests:
+            memory: "{{ .Values.consumer.inventory.resources.requests.memory }}"
+            cpu: "{{ .Values.consumer.inventory.resources.requests.cpu }}"
+          limits:
+            memory: "{{ .Values.consumer.inventory.resources.limits.memory }}"
+            cpu: "{{ .Values.consumer.inventory.resources.limits.cpu }}"

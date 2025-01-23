@@ -19,4 +19,11 @@ spec:
         - containerPort: 8000
         envFrom:
         - configMapRef:
-            name: redis-config
+            name: {{ .Release.Name }}-redis-config
+        resources:
+          requests:
+            memory: "{{ .Values.inventory.resources.requests.memory }}"
+            cpu: "{{ .Values.inventory.resources.requests.cpu }}"
+          limits:
+            memory: "{{ .Values.inventory.resources.limits.memory }}"
+            cpu: "{{ .Values.inventory.resources.limits.cpu }}"

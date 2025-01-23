@@ -20,8 +20,10 @@ spec:
         envFrom:
         - configMapRef:
             name: redis-config
-        env:
-        - name: PRODUCT_SERVICE_URL
-          value: http://inventory:8000
-        - name: FEE_PERCENTAGE
-          value: "5"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"

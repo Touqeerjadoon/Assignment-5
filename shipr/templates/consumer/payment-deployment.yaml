@@ -19,3 +19,10 @@ spec:
         envFrom:
         - configMapRef:
             name: {{ .Values.consumer.payment.redis.configMap }}
+        resources:
+          requests:
+            memory: "{{ .Values.consumer.payment.resources.requests.memory }}"
+            cpu: "{{ .Values.consumer.payment.resources.requests.cpu }}"
+          limits:
+            memory: "{{ .Values.consumer.payment.resources.limits.memory }}"
+            cpu: "{{ .Values.consumer.payment.resources.limits.cpu }}"
