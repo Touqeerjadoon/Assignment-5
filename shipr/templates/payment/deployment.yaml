@@ -4,6 +4,9 @@ metadata:
   name: {{ .Release.Name }}-payment
   labels:
     app: {{ .Release.Name }}-payment
+    {{- with .Values.payment.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.payment.replicaCount }}
   selector:
@@ -29,3 +32,19 @@ spec:
           limits:
             memory: "{{ .Values.payment.resources.limits.memory }}"
             cpu: "{{ .Values.payment.resources.limits.cpu }}"
+        livenessProbe:
+          tcpSocket:
+            port: 8001
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 8001
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        startupProbe:
+          tcpSocket:
+            port: 8001
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5

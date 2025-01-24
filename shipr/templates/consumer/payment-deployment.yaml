@@ -2,6 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-payment-consumer
+  labels:
+    app: {{ .Release.Name }}-payment-consumer
+    {{- with .Values.consumer.payment.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.consumer.payment.replicaCount }}
   selector:
@@ -26,3 +31,27 @@ spec:
           limits:
             memory: "{{ .Values.consumer.payment.resources.limits.memory }}"
             cpu: "{{ .Values.consumer.payment.resources.limits.cpu }}"
+        livenessProbe:
+          exec:
+            command:
+            - "python"
+            - "-c"
+            - "import os; os.system('pgrep -f consumer.py')"
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        readinessProbe:
+          exec:
+            command:
+            - "python"
+            - "-c"
+            - "import os; os.system('pgrep -f consumer.py')"
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        startupProbe:
+          exec:
+            command:
+            - "python"
+            - "-c"
+            - "import os; os.system('pgrep -f consumer.py')"
+          initialDelaySeconds: 20
+          periodSeconds: 10

@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-redis-config
 data:
-  {{- toYaml .Values.global.env | nindent 2 }}
+  {{- toYaml .Values.inventory.env | nindent 2 }}

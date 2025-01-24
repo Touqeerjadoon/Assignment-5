@@ -1,20 +1,12 @@
-global:
-  env:
-    REDIS_HOST: shipr-redis
-    REDIS_PORT: "6379"
-    REDIS_DB: "0"
-    ALLOW_ORIGINS: "http://192.168.49.2:30001"
-    ALLOW_METHODS: "*"
-    ALLOW_HEADERS: "*"
-    PRODUCT_SERVICE_URL: http://192.168.49.2:30002
-    FEE_PERCENTAGE: "5"
-
 redis:
   replicaCount: 1
   image:
     repository: redis
     tag: latest
     pullPolicy: IfNotPresent
+  additionalLabels:
+    environment: dev
+    team: backend
   resources:
     requests:
       memory: "128Mi"
@@ -33,6 +25,18 @@ inventory:
     port: 8000
     nodePort: 30002
     type: NodePort
+  additionalLabels:
+    environment: dev
+    team: backend
+  env:
+    REDIS_HOST: shipr-redis
+    REDIS_PORT: "6379"
+    REDIS_DB: "0"
+    ALLOW_ORIGINS: "http://192.168.49.2:30001"
+    ALLOW_METHODS: "*"
+    ALLOW_HEADERS: "*"
+    PRODUCT_SERVICE_URL: http://192.168.49.2:30002
+    FEE_PERCENTAGE: "5"
   resources:
     requests:
       memory: "128Mi"
@@ -51,6 +55,9 @@ payment:
     port: 8001
     nodePort: 30003
     type: NodePort
+  additionalLabels:
+    environment: dev
+    team: backend
   resources:
     requests:
       memory: "128Mi"
@@ -73,6 +80,9 @@ frontend:
     port: 80
     nodePort: 30001
     type: NodePort
+  additionalLabels:
+    environment: dev
+    team: frontend
   resources:
     requests:
       memory: "64Mi"
@@ -93,6 +103,9 @@ consumer:
     command:
     - python
     - consumer.py
+    additionalLabels:
+      environment: dev
+      team: backend
     resources:
       requests:
         memory: "128Mi"
@@ -112,6 +125,9 @@ consumer:
     command:
     - python
     - consumer.py
+    additionalLabels:
+      environment: dev
+      team: backend
     resources:
       requests:
         memory: "128Mi"

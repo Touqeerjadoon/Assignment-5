@@ -4,6 +4,9 @@ metadata:
   name: {{ .Release.Name }}-frontend
   labels:
     app: {{ .Release.Name }}-frontend
+    {{- with .Values.frontend.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.frontend.replicaCount }}
   selector:
@@ -19,10 +22,24 @@ spec:
         image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
         ports:
         - containerPort: 80
+        {{- if .Values.frontend.resources }}
         resources:
+          {{- if .Values.frontend.resources.requests }}
           requests:
+            {{- if .Values.frontend.resources.requests.memory }}
             memory: "{{ .Values.frontend.resources.requests.memory }}"
+            {{- end }}
+            {{- if .Values.frontend.resources.requests.cpu }}
             cpu: "{{ .Values.frontend.resources.requests.cpu }}"
+            {{- end }}
+          {{- end }}
+          {{- if .Values.frontend.resources.limits }}
           limits:
+            {{- if .Values.frontend.resources.limits.memory }}
             memory: "{{ .Values.frontend.resources.limits.memory }}"
+            {{- end }}
+            {{- if .Values.frontend.resources.limits.cpu }}
             cpu: "{{ .Values.frontend.resources.limits.cpu }}"
+            {{- end }}
+          {{- end }}
+        {{- end }}
