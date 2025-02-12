@@ -7,6 +7,14 @@ redis:
   additionalLabels:
     environment: dev
     team: backend
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "80"
+    prometheus.io/path: "/metrics"
+    logFormat: "json"
+    logLevel: "info"
+    loki.io/logs: "true"
+    loki.io/format: "json"
   resources:
     requests:
       memory: "128Mi"
@@ -28,6 +36,14 @@ inventory:
   additionalLabels:
     environment: dev
     team: backend
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "80"
+    prometheus.io/path: "/metrics"
+    logFormat: "json"
+    logLevel: "info"
+    loki.io/logs: "true"
+    loki.io/format: "json"
   env:
     REDIS_HOST: shipr-redis
     REDIS_PORT: "6379"
@@ -58,6 +74,14 @@ payment:
   additionalLabels:
     environment: dev
     team: backend
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "80"
+    prometheus.io/path: "/metrics"
+    logFormat: "json"
+    logLevel: "info"
+    loki.io/logs: "true"
+    loki.io/format: "json"
   resources:
     requests:
       memory: "128Mi"
@@ -83,6 +107,14 @@ frontend:
   additionalLabels:
     environment: dev
     team: frontend
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "80"
+    prometheus.io/path: "/metrics"
+    logFormat: "json"
+    logLevel: "info"
+    loki.io/logs: "true"
+    loki.io/format: "json"
   resources:
     requests:
       memory: "64Mi"
@@ -106,6 +138,14 @@ consumer:
     additionalLabels:
       environment: dev
       team: backend
+    podAnnotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "80"
+      prometheus.io/path: "/metrics"
+      logFormat: "json"
+      logLevel: "info"
+      loki.io/logs: "true"
+      loki.io/format: "json"
     resources:
       requests:
         memory: "128Mi"
@@ -128,6 +168,14 @@ consumer:
     additionalLabels:
       environment: dev
       team: backend
+    podAnnotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "80"
+      prometheus.io/path: "/metrics"
+      logFormat: "json"
+      logLevel: "info"
+      loki.io/logs: "true"
+      loki.io/format: "json"
     resources:
       requests:
         memory: "128Mi"
