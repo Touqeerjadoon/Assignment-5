@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: shipr
+spec:
+  rules:
+  - host: shipr.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: shipr-frontend
+            port:
+              number: 80
+      - path: /inventory
+        pathType: Prefix
+        backend:
+          service:
+            name: shipr-inventory
+            port:
+              number: 8000
+      - path: /payment
+        pathType: Prefix
+        backend:
+          service:
+            name: shipr-payment
+            port:
+              number: 8001
+
+      - path: /grafana
+        pathType: Prefix
+        backend:
+          service:
+            name: loki-grafana
+            port:
+              number: 80 

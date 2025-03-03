@@ -17,6 +17,25 @@ spec:
       labels:
         app: {{ .Release.Name }}-payment-consumer
     spec:
+      initContainers:
+      - name: wait-for-redis
+        image: busybox:1.28
+        command:
+          - /bin/sh
+          - -c
+          - |
+            # Wait for Redis to be ready
+            until nc -z {{ .Release.Name }}-redis 6379; do
+              echo "Waiting for Redis to be ready..."
+              sleep 5
+            done
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
       containers:
       - name: payment-consumer
         image: "{{ .Values.consumer.payment.image.repository }}:{{ .Values.consumer.payment.image.tag }}"
