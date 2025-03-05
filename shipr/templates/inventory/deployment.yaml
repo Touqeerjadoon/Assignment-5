@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-inventory
+  labels:
+    app: {{ .Release.Name }}-inventory
+    {{- with .Values.inventory.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.inventory.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-inventory
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-inventory
+    spec:
+      containers:
+      - name: inventory
+        image: "{{ .Values.inventory.image.repository }}:{{ .Values.inventory.image.tag }}"
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: {{ .Release.Name }}-inventory-config
+        resources:
+          requests:
+            memory: "{{ .Values.inventory.resources.requests.memory }}"
+            cpu: "{{ .Values.inventory.resources.requests.cpu }}"
+          limits:
+            memory: "{{ .Values.inventory.resources.limits.memory }}"
+            cpu: "{{ .Values.inventory.resources.limits.cpu }}"
+        livenessProbe:
+          tcpSocket:
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        startupProbe:
+          tcpSocket:
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 10

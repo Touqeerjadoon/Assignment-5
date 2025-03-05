@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-payment-consumer
+  labels:
+    app: {{ .Release.Name }}-payment-consumer
+    {{- with .Values.consumer.payment.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.consumer.payment.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-payment-consumer
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-payment-consumer
+    spec:
+      initContainers:
+      - name: wait-for-redis
+        image: busybox:1.28
+        command:
+          - /bin/sh
+          - -c
+          - |
+            # Wait for Redis to be ready
+            until nc -z {{ .Release.Name }}-redis 6379; do
+              echo "Waiting for Redis to be ready..."
+              sleep 5
+            done
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+      containers:
+      - name: payment-consumer
+        image: "{{ .Values.consumer.payment.image.repository }}:{{ .Values.consumer.payment.image.tag }}"
+        command: [ "python", "consumer.py" ]
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.consumer.payment.redis.configMap }}
+        resources:
+          requests:
+            memory: "{{ .Values.consumer.payment.resources.requests.memory }}"
+            cpu: "{{ .Values.consumer.payment.resources.requests.cpu }}"
+          limits:
+            memory: "{{ .Values.consumer.payment.resources.limits.memory }}"
+            cpu: "{{ .Values.consumer.payment.resources.limits.cpu }}"
+        livenessProbe:
+          exec:
+            command:
+            - "python"
+            - "-c"
+            - "import os; os.system('pgrep -f consumer.py')"
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        readinessProbe:
+          exec:
+            command:
+            - "python"
+            - "-c"
+            - "import os; os.system('pgrep -f consumer.py')"
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        startupProbe:
+          exec:
+            command:
+            - "python"
+            - "-c"
+            - "import os; os.system('pgrep -f consumer.py')"
+          initialDelaySeconds: 20
+          periodSeconds: 10

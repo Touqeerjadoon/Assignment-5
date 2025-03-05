@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-consumer
+  template:
+    metadata:
+      labels:
+        app: payment-consumer
+    spec:
+      containers:
+      - name: payment-consumer
+        image: touqeerjadoon55/shipr-payment-consumer:1.0.0
+        command: [ "python", "consumer.py" ]
+        envFrom:
+        - configMapRef:
+            name: redis-config
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"

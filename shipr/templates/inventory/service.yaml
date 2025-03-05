@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-inventory
+  labels:
+    app: {{ .Release.Name }}-inventory
+    {{- with .Values.inventory.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    app: {{ .Release.Name }}-inventory
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: {{ .Values.inventory.service.type | default "ClusterIP" }}
